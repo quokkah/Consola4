@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
-
 import static java.nio.file.Files.readAllLines;
 
 public class Console {
@@ -17,24 +16,26 @@ public class Console {
     }
     public static boolean signedIn = false;
     static String input;
-    static Path pathUser = java.nio.file.Paths.get("src/main/java/org.example.javafxdemo/data/usernames.txt");
+    static Path pathUser = java.nio.file.Paths.get("src/main/java/org/example/javafxdemo/data/usernames.txt");
     static boolean usernameInUse = false;
     static int accountNumber;
 
     static void getInput(Runnable callback) {
         UI.textArea.setOnKeyPressed(ke -> {
-            if (ke.getCode().equals(KeyCode.ENTER)) {
-                System.out.println("-UserInput: Pressed Enter");
-                UI.preInput = UI.textArea.getText();
-                UI.lines = UI.preInput.split("\n");
-                if (UI.lines.length >= 1) {
-                    input = UI.lines[UI.lines.length - 1];
-                    System.out.println("-UserInput: " + input);
-                    callback.run();
-                }
-                UI.textArea.appendText("");
-            } else if (ke.getCode().equals(KeyCode.ALT_GRAPH)) { //ALT_GRAPH -> Alt Gr
-                System.out.println("-UserALTGR: " + input);
+            switch (ke.getCode()) {
+                case KeyCode.ENTER:
+                    System.out.println("-UserInput: Pressed Enter");
+                    UI.preInput = UI.textArea.getText();
+                    UI.lines = UI.preInput.split("\n");
+                    if (UI.lines.length >= 1) {
+                        input = UI.lines[UI.lines.length - 1];
+                        System.out.println("-UserInput: " + input);
+                        callback.run();
+                    }
+                    break;
+                case KeyCode.ALT_GRAPH:
+                    System.out.println("-UserALTGR:\nInput: " + input + "\nPathUser: " + pathUser + "\nsignedIn: " + signedIn + "\naccountNumber: " + accountNumber);
+                    break;
             }
         });
     }
@@ -50,7 +51,6 @@ public class Console {
         });
     }
     static void signUpUs() {
-        accountNumber = 0;
         usernameInUse = false;
         say("Username:");
         getInput(() -> {
@@ -72,12 +72,8 @@ public class Console {
                             say("Username already in use, try a different one");
                             signUpUs();
                         } else {
-                            for (String line : readAllLines(pathUser)) {
-                                if (line.isEmpty()) {
-                                    Files.newBufferedWriter(pathUser , StandardOpenOption.TRUNCATE_EXISTING);
-                                }
-                                accountNumber++;
-                            }
+                            Files.write(pathUser, (input + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
+                            accountNumber = (int) Files.lines(pathUser).count();
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -86,6 +82,7 @@ public class Console {
             }
         });
     }
+
     static void logInUs() {
 
     }

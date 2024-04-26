@@ -15,7 +15,6 @@ public class UI extends Application {
     public String preInput = "";
     public String[] lines = new String[0];
     Console Console = new Console(this);
-
     @Override
     public void start(Stage primaryStage) {
         StackPane root = new StackPane();
