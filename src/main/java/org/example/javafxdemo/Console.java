@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import static java.nio.file.Files.readAllLines;
-import java.io.*;
 
 public class Console {
     static UI UI;
@@ -19,6 +18,7 @@ public class Console {
     public static boolean signedIn = false;
     static String input;
     static Path userPath = java.nio.file.Paths.get("src/main/java/org/example/javafxdemo/data/usernames.txt");
+    static Path passPath = java.nio.file.Paths.get("src/main/java/org/example/javafxdemo/data/passwords.txt");
     static boolean usernameInUse = false;
     static int accountNumber;
 
@@ -56,49 +56,73 @@ public class Console {
         usernameInUse = false;
         say("Username:");
         getInput(() -> {
-            if (Objects.equals(input, "-back")) {
-                signUpOrLogin();
-            } else {
-                if (input.startsWith("-")) {
-                    say("Username cannot start with '-'");
-                    signUpUs();
-                } else {
-                    try {
-                        for (String line : readAllLines(userPath)) {
-                            if (Objects.equals(line, input)) {
-                                usernameInUse = true;
-                                break;
-                            }
+            if (dataReqs(input, "Username")) {
+                try {
+                    for (String line : readAllLines(userPath)) {
+                        accountNumber++;
+                        if (Objects.equals(line, "-")) {
+                            List<String> linesUser = Files.readAllLines(userPath, StandardCharsets.UTF_8);
+                            linesUser.set(accountNumber - 1, input);
+                            Files.write(userPath, linesUser, StandardCharsets.UTF_8);
+                            break;
                         }
-                        if (usernameInUse) {
-                            say("Username already in use, try a different one");
-                            signUpUs();
-                        } else {
-                           for (String line : readAllLines(userPath)) {
-                               accountNumber++;
-                               if (Objects.equals(line, "-")) {
-                                   List<String> linesUser = Files.readAllLines(userPath, StandardCharsets.UTF_8);
-                                   linesUser.set(accountNumber - 1, input);
-                                   Files.write(userPath, linesUser, StandardCharsets.UTF_8);
-                                   break;
-                               }
-                           }
-                           signUpPass();
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
                     }
+                    signUpPass();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
+            } else {
+                signUpUs();
             }
         });
     }
     static void signUpPass() {
         say("Password:");
         getInput(() -> {
-
+            if (dataReqs(input, "Password")) {
+                List<String> linesPass = null;
+                try {
+                    linesPass = Files.readAllLines(passPath, StandardCharsets.UTF_8);
+                    linesPass.set(accountNumber - 1, input);
+                    Files.write(passPath, linesPass, StandardCharsets.UTF_8);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                say("Password set, continue to home screen");
+            } else {
+                signUpPass();
+            }
         });
     }
-
+    static boolean dataReqs(String input, String passOrUser) {
+        if (input.startsWith("-")) {
+            say(passOrUser + " cannot start with '-'");
+            return false;
+        } else if (input.isEmpty()) {
+            say(passOrUser + " cannot be empty");
+            return false;
+        } else if (input.contains(" ")) {
+            say(passOrUser + " cannot contain spaces");
+            return false;
+        } else {
+            if (Objects.equals(passOrUser, "Password")) {
+                return true;
+            } else {
+                try {
+                    for (String line : readAllLines(userPath)) {
+                        if (Objects.equals(line, input)) {
+                            say("Username already in use");
+                            usernameInUse = true;
+                            break;
+                        }
+                    }
+                    return !usernameInUse;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
     static void logInUs() {
 
     }

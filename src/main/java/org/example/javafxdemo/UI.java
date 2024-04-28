@@ -29,7 +29,7 @@ public class UI extends Application {
         primaryStage.setScene(scene);
         primaryStage.setX(0);
         primaryStage.setY(0);
-        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(true); //turn this off when debugging
         primaryStage.setFullScreenExitHint("");
         primaryStage.show();
 
