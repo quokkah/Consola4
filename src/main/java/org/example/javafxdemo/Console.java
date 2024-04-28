@@ -21,7 +21,6 @@ public class Console {
     static Path userPath = java.nio.file.Paths.get("src/main/java/org/example/javafxdemo/data/usernames.txt");
     static boolean usernameInUse = false;
     static int accountNumber;
-    static int maxAccounts = 128;
 
     static void getInput(Runnable callback) {
         UI.textArea.setOnKeyPressed(ke -> {
