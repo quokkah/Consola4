@@ -20,7 +20,8 @@ public class UI extends Application {
         StackPane root = new StackPane();
         Font font = Font.loadFont("file:resources/fonts/CONSOLA.ttf", 20);
         textArea.setFont(font);
-        StackPane.setAlignment(textArea, Pos.TOP_LEFT); // Position the text field in the top left corner
+        StackPane.setAlignment(textArea, Pos.TOP_LEFT);
+
         root.getChildren().add(textArea);
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("stylesheet.css")).toExternalForm());

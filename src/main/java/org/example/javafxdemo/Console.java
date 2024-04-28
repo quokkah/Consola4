@@ -3,11 +3,13 @@ package org.example.javafxdemo;
 import javafx.scene.input.KeyCode;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.Objects;
 import static java.nio.file.Files.readAllLines;
+import java.io.*;
 
 public class Console {
     static UI UI;
@@ -16,9 +18,10 @@ public class Console {
     }
     public static boolean signedIn = false;
     static String input;
-    static Path pathUser = java.nio.file.Paths.get("src/main/java/org/example/javafxdemo/data/usernames.txt");
+    static Path userPath = java.nio.file.Paths.get("src/main/java/org/example/javafxdemo/data/usernames.txt");
     static boolean usernameInUse = false;
     static int accountNumber;
+    static int maxAccounts = 128;
 
     static void getInput(Runnable callback) {
         UI.textArea.setOnKeyPressed(ke -> {
@@ -34,7 +37,7 @@ public class Console {
                     }
                     break;
                 case KeyCode.ALT_GRAPH:
-                    System.out.println("-UserALTGR:\nInput: " + input + "\nPathUser: " + pathUser + "\nsignedIn: " + signedIn + "\naccountNumber: " + accountNumber);
+                    System.out.println("-UserALTGR:\nInput: " + input + "\nPathUser: " + userPath + "\nsignedIn: " + signedIn + "\naccountNumber: " + accountNumber);
                     break;
             }
         });
@@ -47,7 +50,7 @@ public class Console {
                 case "1" -> signUpUs();
                 case "2" -> logInUs();
                 default -> say("Invalid choice");
-            };
+            }
         });
     }
     static void signUpUs() {
@@ -62,7 +65,7 @@ public class Console {
                     signUpUs();
                 } else {
                     try {
-                        for (String line : readAllLines(pathUser)) {
+                        for (String line : readAllLines(userPath)) {
                             if (Objects.equals(line, input)) {
                                 usernameInUse = true;
                                 break;
@@ -72,14 +75,28 @@ public class Console {
                             say("Username already in use, try a different one");
                             signUpUs();
                         } else {
-                            Files.write(pathUser, (input + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
-                            accountNumber = (int) Files.lines(pathUser).count();
+                           for (String line : readAllLines(userPath)) {
+                               accountNumber++;
+                               if (Objects.equals(line, "-")) {
+                                   List<String> linesUser = Files.readAllLines(userPath, StandardCharsets.UTF_8);
+                                   linesUser.set(accountNumber - 1, input);
+                                   Files.write(userPath, linesUser, StandardCharsets.UTF_8);
+                                   break;
+                               }
+                           }
+                           signUpPass();
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
             }
+        });
+    }
+    static void signUpPass() {
+        say("Password:");
+        getInput(() -> {
+
         });
     }
 
