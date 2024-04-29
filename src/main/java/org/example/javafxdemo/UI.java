@@ -29,14 +29,11 @@ public class UI extends Application {
         primaryStage.setScene(scene);
         primaryStage.setX(0);
         primaryStage.setY(0);
-        primaryStage.setFullScreen(true); //turn this off when debugging
+        primaryStage.setFullScreen(false); //turn this off when debugging
         primaryStage.setFullScreenExitHint("");
         primaryStage.show();
         org.example.javafxdemo.Console.title();
-
-        if (!org.example.javafxdemo.Console.signedIn) {
-            org.example.javafxdemo.Console.signUpOrLogin();
-        }
+        org.example.javafxdemo.Console.signUpOrLogin();
     }
 
     public static void main(String[] args) {
