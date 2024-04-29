@@ -80,7 +80,7 @@ public class Console {
         say("Password:");
         getInput(() -> {
             if (dataReqs(input, "Password")) {
-                List<String> linesPass = null;
+                List<String> linesPass;
                 try {
                     linesPass = Files.readAllLines(passPath, StandardCharsets.UTF_8);
                     linesPass.set(accountNumber - 1, input);
@@ -88,7 +88,9 @@ public class Console {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                say("Password set, continue to home screen");
+                signedIn = true;
+                startMessage(true);
+                console();
             } else {
                 signUpPass();
             }
@@ -127,23 +129,46 @@ public class Console {
 
     }
 
-    public static void console(String input) {
+    public static void console() {
         if (signedIn) {
-            switch (input) {
-                case "help":
-                    say("help - Show all available commands.\nexit - Close the program");
-                    break;
-                case "exit":
-                    wait(250);
-                    exit();
-                default:
-                    say("Unknown Command!");
-            }
+            getInput(() -> {
+                switch (input) {
+                    case "help":
+                        say("help - Show all available commands.\nexit - Close the program");
+                        break;
+                    case "exit":
+                        wait(250);
+                        exit();
+                    default:
+                        say("Unknown Command!");
+                };
+            });
         } else {
             Console.signUpOrLogin();
         }
     }
 
+    public static void title() {
+        say("""
+                                     ________  ________  ________   ________  ________  ___       ________  ________     \s
+                                    |\\   ____\\|\\   __  \\|\\   ___  \\|\\   ____\\|\\   __  \\|\\  \\     |\\   __  \\|\\   ____\\    \s
+                                    \\ \\  \\___|\\ \\  \\|\\  \\ \\  \\\\ \\  \\ \\  \\___|\\ \\  \\|\\  \\ \\  \\    \\ \\  \\|\\  \\ \\  \\___|_   \s
+                                     \\ \\  \\    \\ \\  \\\\\\  \\ \\  \\\\ \\  \\ \\_____  \\ \\  \\\\\\  \\ \\  \\    \\ \\   __  \\ \\_____  \\  \s
+                                      \\ \\  \\____\\ \\  \\\\\\  \\ \\  \\\\ \\  \\|____|\\  \\ \\  \\\\\\  \\ \\  \\____\\ \\  \\ \\  \\|____|\\  \\ \s
+                                       \\ \\_______\\ \\_______\\ \\__\\\\ \\__\\____\\_\\  \\ \\_______\\ \\_______\\ \\__\\ \\__\\____\\_\\  \\\s
+                                        \\|_______|\\|_______|\\|__| \\|__|\\_________\\|_______|\\|_______|\\|__|\\|__|\\_________\\
+                                                                      \\|_________|                            \\|_________|
+                                                                        by quokkah\s
+                """
+        );
+    }
+    static void startMessage(boolean doWelcome) {
+        if (doWelcome) {
+            clear(false);
+            say("Welcome!");
+        }
+        say("Type 'help' for commands");
+    }
     static void wait(int ms) {
         try {
             Thread.sleep(ms);
@@ -153,6 +178,12 @@ public class Console {
     }
     public static void say(String text) {
         UI.textArea.appendText(text + "\n");
+    }
+    static void clear(boolean fullClear) {
+        UI.textArea.clear();
+        if (!fullClear) {
+            title();
+        }
     }
     static void exit() {
         System.exit(0);

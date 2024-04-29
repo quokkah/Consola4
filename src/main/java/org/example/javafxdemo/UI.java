@@ -32,20 +32,7 @@ public class UI extends Application {
         primaryStage.setFullScreen(true); //turn this off when debugging
         primaryStage.setFullScreenExitHint("");
         primaryStage.show();
-
-        //startup message
-        org.example.javafxdemo.Console.say("""
-                                     ________  ________  ________   ________  ________  ___       ________  ________     \s
-                                    |\\   ____\\|\\   __  \\|\\   ___  \\|\\   ____\\|\\   __  \\|\\  \\     |\\   __  \\|\\   ____\\    \s
-                                    \\ \\  \\___|\\ \\  \\|\\  \\ \\  \\\\ \\  \\ \\  \\___|\\ \\  \\|\\  \\ \\  \\    \\ \\  \\|\\  \\ \\  \\___|_   \s
-                                     \\ \\  \\    \\ \\  \\\\\\  \\ \\  \\\\ \\  \\ \\_____  \\ \\  \\\\\\  \\ \\  \\    \\ \\   __  \\ \\_____  \\  \s
-                                      \\ \\  \\____\\ \\  \\\\\\  \\ \\  \\\\ \\  \\|____|\\  \\ \\  \\\\\\  \\ \\  \\____\\ \\  \\ \\  \\|____|\\  \\ \s
-                                       \\ \\_______\\ \\_______\\ \\__\\\\ \\__\\____\\_\\  \\ \\_______\\ \\_______\\ \\__\\ \\__\\____\\_\\  \\\s
-                                        \\|_______|\\|_______|\\|__| \\|__|\\_________\\|_______|\\|_______|\\|__|\\|__|\\_________\\
-                                                                      \\|_________|                            \\|_________|
-                                                                        by quokkah\s
-                """
-        );
+        org.example.javafxdemo.Console.title();
 
         if (!org.example.javafxdemo.Console.signedIn) {
             org.example.javafxdemo.Console.signUpOrLogin();
