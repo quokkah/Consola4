@@ -55,6 +55,7 @@ public class Console {
                     if (UI.lines.length >= 1) {
                         input = UI.lines[UI.lines.length - 1];
                         System.out.println("-UserInput: " + input);
+                        //why cant i put return here
                     }
                     break;
                 case KeyCode.ALT_GRAPH:
@@ -69,17 +70,21 @@ public class Console {
     public static void signUpOrLogin() {
         say("Choose an option:\n[1] Sign up\n[2] Log in");
         switch (getInput()) {
-            case "1": signUpUs();
-            case "2": logInUs();
+            case "1":
+                signUpUs();
+            case "2":
+                logInUs();
             case null:
-
-            default: say("Invalid choice");
+                System.out.println("null");
+            default:
+                say("Invalid choice");
         }
     }
     static void signUpUs() {
         usernameInUse = false;
         say("Username:");
-        if (dataReqs(getInput(), "Username")) {
+        getInput();
+        if (dataReqs(input, "Username")) {
             try {
                 for (String line : readAllLines(userPath)) {
                     accountNumber++;
@@ -100,7 +105,8 @@ public class Console {
     }
     static void signUpPass() {
         say("Password:");
-        if (dataReqs(getInput(), "Password")) {
+        getInput();
+        if (dataReqs(input, "Password")) {
             List<String> linesPass;
             try {
                 linesPass = Files.readAllLines(passPath, StandardCharsets.UTF_8);
@@ -151,7 +157,7 @@ public class Console {
         try {
             for (String line : readAllLines(userPath)) {
                 accountNumber++;
-                if (Objects.equals(line, getInput())) {
+                if (Objects.equals(line, input)) {
                     usernameExists = true;
                     break;
                 }
@@ -172,7 +178,8 @@ public class Console {
 
     public static void console() {
         if (signedIn) {
-            switch (getInput()) {
+            getInput();
+            switch (input) {
                 case "help":
                     say("help - Show all available commands.\nexit - Close the program");
                     break;
